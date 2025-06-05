@@ -1,22 +1,29 @@
-// src/components/ProductList/ProductList.jsx
 import React from "react";
-import useProducts from "../../hooks/UseProducts";
 import ProductCard from "../ProductCard/ProductCard";
 import ProductCardImage from "../ProductCard/ProductCardImage";
 import ProductCardInfo from "../ProductCard/ProductCardInfo";
 import ProductCardActions from "../ProductCard/ProductCardActions";
 import ProductSkeleton from "../ProductSkeleton/ProductSkeleton";
+import useProducts from "../../hooks/UseProducts";
 
+/**
+ * items      – масив товарів (якщо не передано, компонент сам фетчить useProducts())
+ * showAdd    – чи показувати кнопку 🛒 «додати в кошик»
+ * showRemove – чи показувати кнопку × «видалити з кошика»
+ * onRemove   – колбек, який викликається при натисканні ×
+ */
 export default function ProductList({
-  items = null, // ← НОВЕ
-  actions = {}, // { showAdd, showRemove, onRemove }
+  items,
+  showAdd = false,
+  showRemove = false,
+  onRemove,
 }) {
-  /* якщо items не передано – фетчимо всі товари, як раніше */
-  const { data: products, loading, error } = useProducts({ enabled: !items });
+  /* якщо items не передали – тягнемо через хук */
+  const { data: fetched, loading, error } = useProducts();
+  const list = items ?? fetched;
 
-  const list = items ?? products ?? [];
-
-  if (loading)
+  /*  ─── skeleton / error ─── */
+  if (!items && loading)
     return (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Array.from({ length: 8 }).map((_, idx) => (
@@ -25,8 +32,10 @@ export default function ProductList({
       </div>
     );
 
-  if (error) return <p className="text-red-600">🛑 {error.message}</p>;
+  if (!items && error)
+    return <p className="text-red-600">🛑 {error.message}</p>;
 
+  /*  ─── самі картки ─── */
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {list.map((p) => (
@@ -34,9 +43,9 @@ export default function ProductList({
           <ProductCardImage />
           <ProductCardInfo />
           <ProductCardActions
-            showAdd={actions.showAdd}
-            showRemove={actions.showRemove}
-            onRemove={actions.onRemove}
+            showAdd={showAdd}
+            showRemove={showRemove}
+            onRemove={onRemove}
           />
         </ProductCard>
       ))}
