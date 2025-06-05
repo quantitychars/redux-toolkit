@@ -14,7 +14,7 @@ export default function ViewsPicturesSection({ items = [] }) {
           <ProductCard product={p} key={p.id} className="pictures__item">
             <ProductCard.Image />
             <ProductCard.Info />
-            <ProductCard.Actions />
+            <ProductCard.Actions showAdd />
           </ProductCard>
         ))}
       </div>

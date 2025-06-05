@@ -1,28 +1,26 @@
 import Product from "../models/Product.js";
 
 export default class ProductsRepository {
-  //   /** @param {(input: RequestInfo, init?: RequestInit) => Promise<Response>} fetcher */
-  constructor(fetcher = window.fetch.bind(window)) {
-    this.fetcher = fetcher; // DI — легко мокати
+  /** @param {(input: string, init?: RequestInit) => Promise<Response>} fetcher */
+  constructor(fetcher = fetch) {
+    this.fetcher = fetcher.bind(window);
   }
 
-  async #fetchRaw() {
+  static _cache = null; // кешуємо, щоб не тягнути JSON кожного разу
+
+  async getAll() {
+    if (ProductsRepository._cache) return ProductsRepository._cache;
+
     const res = await this.fetcher("/products.json");
     if (!res.ok) throw new Error(`Failed to load products: ${res.status}`);
-    return res.json(); // -> DTO[]
+    const raw = await res.json(); // DTO[]
+
+    ProductsRepository._cache = raw.map((dto) => new Product(dto));
+    return ProductsRepository._cache;
   }
 
-  /** Повертає масив екземплярів Product */
-  async getAll() {
-    const raw = await this.#fetchRaw();
-    return raw.map((dto) => new Product(dto));
-  }
-
-  /** Повертає один Product або undefined */
   async getById(id) {
     const list = await this.getAll();
     return list.find((p) => p.id === id);
   }
-
-  // save/update/delete — не потрібні в завданні, але можна додати пізніше
 }

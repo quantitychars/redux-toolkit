@@ -12,20 +12,22 @@ import HeroBanner from "./components/HeroBanner/HeroBanner";
 import ViewsPicturesSection from "./components/ViewsPicturesSection/ViewsPicturesSection";
 import useProducts from "./hooks/UseProducts";
 import Footer from "./components/Footer/Footer";
+import AppRouters from "./routers/AppRoutes";
 
 function App() {
   useEffect(() => {
     const repo = new CacheRepoDecorator(new ProductsRepository(), 30_000);
     repo.getAll().then(console.log);
   }, []);
-  const { data } = useProducts();
+
   return (
     <>
       <Header />
       <main className="container mx-auto py-8">
-        <HeroBanner />
+        <AppRouters />
+        {/* <HeroBanner />
         {data && <ViewsPicturesSection items={data} />}
-        <Footer />
+        <Footer /> */}
       </main>
     </>
   );

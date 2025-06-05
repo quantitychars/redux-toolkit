@@ -1,8 +1,9 @@
 import React from "react";
+import { Link, NavLink } from "react-router-dom";
 import { Heart, ShoppingCart, Search } from "lucide-react";
 import { useCart } from "../../contexts/CartContext";
 import { useFavorites } from "../../contexts/FavoritesContext";
-import "./Header.scss"; // глобальні стилі, не modules
+import "./Header.scss";
 
 import logo from "./imgs/Logo.png";
 
@@ -16,17 +17,22 @@ export default function Header() {
     <header className="header">
       <div className="header__container">
         <div className="header__logo">
-          <a href="#" className="logo__link">
-            <img src={logo} alt="logo" className="logo__image" />
-          </a>
+          <Link to="/" className="logo__link">
+            <img src={logo} alt="PhotoStore logo" className="logo__image" />
+          </Link>
         </div>
 
-        {/* центрове меню */}
         <nav className="header__nav">
           {navLinks.map((text) => (
-            <a key={text} href="#" className="nav__link">
+            <NavLink
+              key={text}
+              to={`/${text.toLowerCase()}`}
+              className={({ isActive }) =>
+                `nav__link ${isActive ? "active" : ""}`
+              }
+            >
               {text}
-            </a>
+            </NavLink>
           ))}
         </nav>
 
@@ -42,14 +48,25 @@ export default function Header() {
 
         {/* іконки праворуч */}
         <div className="header__actions">
-          <button className="icon-btn">
-            <Heart size={20} />
-            {favCount > 0 && <span className="badge">{favCount}</span>}
-          </button>
-          <button className="icon-btn ml-2">
-            <ShoppingCart size={20} />
-            {cartCount > 0 && <span className="badge">{cartCount}</span>}
-          </button>
+          <NavLink
+            to="/favorites"
+            className={({ isActive }) => `link ${isActive ? "active" : ""}`}
+          >
+            <button className="icon-btn">
+              <Heart size={20} />
+
+              {favCount > 0 && <span className="badge">{favCount}</span>}
+            </button>
+          </NavLink>
+          <NavLink
+            to="/cart"
+            className={({ isActive }) => `link ${isActive ? "active" : ""}`}
+          >
+            <button className="icon-btn ml-2">
+              <ShoppingCart size={20} />
+              {cartCount > 0 && <span className="badge">{cartCount}</span>}
+            </button>
+          </NavLink>
         </div>
       </div>
     </header>

@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { createPortal } from "react-dom";
+
 const Card = styled.div`
   background: #fff;
   border-radius: 12px;
@@ -8,6 +10,14 @@ const Card = styled.div`
   padding: 32px;
   position: relative;
 `;
-export default function ModalWrapper({ children, className = "" }) {
-  return <Card className={`modal-wrapper ${className}`}>{children}</Card>;
+export default function ModalWrapper({ children, className = "", onClose }) {
+  return createPortal(
+    <Card
+      className={`modal-wrapper ${className}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {children}
+    </Card>,
+    document.body
+  );
 }

@@ -30,14 +30,20 @@ export function CartProvider({ children }) {
     }
   });
 
+  const add = (id) => dispatch({ type: "ADD", payload: { id } });
+  const remove = (id) => dispatch({ type: "REMOVE", payload: { id } });
+
+  const items = Object.entries(cart).map(([id, qty]) => ({ id, qty }));
+
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const value = {
-    cart,
-    count: Object.values(cart).reduce((s, n) => s + n, 0),
-    dispatch,
+    items,
+    count: items.reduce((s, i) => s + i.qty, 0),
+    add,
+    remove,
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

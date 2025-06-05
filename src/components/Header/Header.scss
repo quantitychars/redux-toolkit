@@ -108,3 +108,10 @@
   height: 40px;
   width: auto;
 }
+.link {
+  position: relative; // для бейджа
+  color: #bbb;
+  &.active {
+    color: #fff;
+  }
+}
