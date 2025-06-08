@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Button } from "./components/Button/Button";
 import Modal from "../src/containers/components/Modal/Modal";
-import "./App.css";
-
+import "./App.css"; // Importing styles
 import { useEffect } from "react";
 import ProductsRepository from "./repositories/ProductsRepository";
 import CacheRepoDecorator from "./repositories/decorators/CacheRepoDecorator";
