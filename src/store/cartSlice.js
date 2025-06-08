@@ -41,6 +41,7 @@ export const { addItem, removeItem } = cartSlice.actions;
 
 // Експортуємо сам reducer
 export default cartSlice.reducer;
+
 // Селектор для отримання кошика у вигляді масиву [{id, qty}]
 export const selectCartItems = (state) =>
   Object.entries(state.cart.items).map(([id, qty]) => ({ id, qty }));

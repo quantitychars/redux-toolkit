@@ -1,11 +1,11 @@
-// src/pages/FavoritesPage.jsx
 import React, { useEffect, useState } from "react";
-import { useFavorites } from "../contexts/FavoritesContext";
 import { getProducts } from "../api/getProducts";
+import { useSelector } from "react-redux";
+import { selectFavoriteIds } from "../store/favoritesSlice";
 import ProductList from "../components/ProductList/ProductList";
 
 export default function FavoritesPage() {
-  const { items: favIds } = useFavorites();
+  const favIds = useSelector(selectFavoriteIds);
   const [all, setAll] = useState([]);
 
   useEffect(() => {
