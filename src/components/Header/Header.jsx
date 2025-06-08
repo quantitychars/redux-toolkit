@@ -1,7 +1,8 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Heart, ShoppingCart, Search } from "lucide-react";
-import { useCart } from "../../contexts/CartContext";
+import { useSelector } from "react-redux";
+import { selectCartCount } from "../../store/cartSlice";
 import { useFavorites } from "../../contexts/FavoritesContext";
 import "./Header.scss";
 
@@ -10,7 +11,7 @@ import logo from "./imgs/Logo.png";
 const navLinks = ["Landscapes", "Portraits", "Architecture", "Macro", "Urban"];
 
 export default function Header() {
-  const { count: cartCount } = useCart();
+  const cartCount = useSelector(selectCartCount);
   const { count: favCount } = useFavorites();
 
   return (

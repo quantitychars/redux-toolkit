@@ -1,13 +1,14 @@
-// src/pages/CartPage.jsx
 import React, { useEffect, useState } from "react";
-import { useCart } from "../contexts/CartContext";
 import { useModal } from "../hooks/useModal";
-import { getProducts } from "../api/getProducts"; // /products.json
+import { getProducts } from "../api/getProducts";
+import { useSelector, useDispatch } from "react-redux";
+import { selectCartItems, removeItem } from "../store/cartSlice";
 import ConfirmModal from "../components/ConfirmModal/ConfirmModal";
 import ProductList from "../components/ProductList/ProductList";
 
 export default function CartPage() {
-  const { items: cartIds, remove } = useCart(); // [{ id, qty }]
+  const cartItems = useSelector(selectCartItems);
+  const dispatch = useDispatch();
   const { open, close } = useModal();
 
   /* 1. Тягнемо всі товари один раз */
@@ -31,7 +32,7 @@ export default function CartPage() {
         title="Видалити товар?"
         onCancel={close}
         onConfirm={() => {
-          remove(id);
+          dispatch(removeItem({ id }));
           close();
         }}
       />

@@ -1,27 +1,25 @@
-// src/components/ProductCard/ProductCardActions.jsx
 import React from "react";
 import { Heart, ShoppingCart, X } from "lucide-react";
 import PropTypes from "prop-types";
 
 import Toast from "../Toast/Toast";
 import { useFavorites } from "../../contexts/FavoritesContext";
-import { useCart } from "../../contexts/CartContext";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../store/cartSlice";
 import { useProduct } from "./ProductCard";
 import { useModal } from "../../hooks/useModal";
 
 export default function ProductCardActions({
-  showAdd = false, // показувати кнопку «додати у кошик»
-  showRemove = false, // показувати хрестик «видалити з кошика»
-  onRemove, // колбек для видалення
+  showAdd = false,
+  showRemove = false,
+  onRemove,
 }) {
   const product = useProduct(); // { id, ... }
 
-  /* ⭐  — улюблене */
   const { toggle, isFavorite } = useFavorites();
   const fav = isFavorite(product.id);
 
-  /* 🛒  — кошик */
-  const { add } = useCart();
+  const dispatch = useDispatch();
   const { open, close } = useModal(); // для тосту
 
   /* ────────────── UI ────────────── */
@@ -40,7 +38,7 @@ export default function ProductCardActions({
       {showAdd && (
         <button
           onClick={() => {
-            add(product.id);
+            dispatch(addItem({ id: product.id }));
             open(<Toast message="Додано у кошик" onClose={close} />);
           }}
           aria-label="add to cart"
