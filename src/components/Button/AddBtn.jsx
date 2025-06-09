@@ -2,17 +2,21 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../store/cartSlice";
 import { useProduct } from "../../components/ProductCard/ProductCard";
-import { useModal } from "../../hooks/useModal.jsx";
+import { openModal } from "../../store/modalSlice";
 import AddToCartModal from "../Modal/AddToCartModal.jsx";
 
 export default function AddBtn({ className = "" }) {
   const dispatch = useDispatch();
-  const { open, close } = useModal();
   const product = useProduct();
 
   const handleClick = () => {
     dispatch(addItem({ id: product.id }));
-    open(<AddToCartModal product={product} onClose={close} />);
+    dispatch(
+      openModal({
+        type: "ADD_TO_CART", // Тип для ModalRoot
+        props: { product }, // Пропсы для модалки
+      })
+    );
   };
 
   return (

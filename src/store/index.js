@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer, { loadState as loadCartState } from "./cartSlice";
 import modalReducer from "./modalSlice";
-import cartReducer, { loadState as loadCartState } from "./cartSlice";
+import productsReducer from "./productsSlice";
 import favoritesReducer, { loadFavoritesState } from "./favoritesSlice";
-// 1. Створюємо Middleware для збереження в localStorage
+
 const localStorageMiddleware = (store) => (next) => (action) => {
   const result = next(action); // Спочатку нехай reducer оновить стан
 

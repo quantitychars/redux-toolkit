@@ -5,13 +5,9 @@ import "./App.css"; // Importing styles
 import { useEffect } from "react";
 import ProductsRepository from "./repositories/ProductsRepository";
 import CacheRepoDecorator from "./repositories/decorators/CacheRepoDecorator";
-import ProductList from "./components/ProductList/ProductList";
 import Header from "./components/Header/Header";
-import HeroBanner from "./components/HeroBanner/HeroBanner";
-import ViewsPicturesSection from "./components/ViewsPicturesSection/ViewsPicturesSection";
-import useProducts from "./hooks/UseProducts";
-import Footer from "./components/Footer/Footer";
 import AppRouters from "./routers/AppRoutes";
+import ModalRoot from "./components/ModalRoot/ModalRoot";
 
 function App() {
   useEffect(() => {
@@ -27,6 +23,7 @@ function App() {
         {/* <HeroBanner />
         {data && <ViewsPicturesSection items={data} />}
         <Footer /> */}
+        <ModalRoot />
       </main>
     </>
   );

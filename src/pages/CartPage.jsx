@@ -1,45 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { useModal } from "../hooks/useModal";
-import { getProducts } from "../api/getProducts";
+import React, { useEffect } from "react";
+import { openModal } from "../store/modalSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { fetchProducts } from "../store/productsSlice";
 import { selectCartItems, removeItem } from "../store/cartSlice";
-import ConfirmModal from "../components/ConfirmModal/ConfirmModal";
 import ProductList from "../components/ProductList/ProductList";
 
 export default function CartPage() {
   const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
-  const { open, close } = useModal();
 
   /* 1. Тягнемо всі товари один раз */
-  const [all, setAll] = useState([]);
-  useEffect(() => {
-    getProducts().then(setAll).catch(console.error);
-  }, []);
+  const {
+    items: allProducts,
+    status,
+    error,
+  } = useSelector((state) => state.products);
 
-  /* 2. Перетворюємо id → product + qty */
-  const cartProducts = cartIds
+  useEffect(() => {
+    // Диспатчимо наш Thunk, тільки якщо дані ще не завантажені
+    if (status === null) {
+      dispatch(fetchProducts());
+    }
+  }, [status, dispatch]);
+
+  const cartProducts = cartItems
     .map(({ id, qty }) => {
-      const prod = all.find((p) => p.id === id);
+      const prod = allProducts.find((p) => p.id === id);
       return prod ? { ...prod, qty } : null;
     })
     .filter(Boolean);
 
+  // Обробляємо стани завантаження
+  if (status === "loading") {
+    return <p className="text-center py-12">Завантаження товарів...</p>;
+  }
+
+  if (status === "rejected") {
+    return <p className="text-center py-12 text-red-500">Помилка: {error}</p>;
+  }
+
   /* 3. Модалка підтвердження */
-  const confirmRemove = (id) =>
-    open(
-      <ConfirmModal
-        title="Видалити товар?"
-        onCancel={close}
-        onConfirm={() => {
-          dispatch(removeItem({ id }));
-          close();
-        }}
-      />
+  const confirmRemove = (id) => {
+    dispatch(
+      openModal({
+        type: "CONFIRM_DELETE",
+        props: {
+          title: "Видалити товар?",
+          productId: id,
+        },
+      })
     );
+  };
 
   /* 4. UI */
-  if (!all.length) return null; // або <Loader/>
 
   return cartProducts.length ? (
     <ProductList

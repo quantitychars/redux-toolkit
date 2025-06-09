@@ -1,37 +1,33 @@
 import React from "react";
 import { Heart, ShoppingCart, X } from "lucide-react";
+
 import PropTypes from "prop-types";
 
-import Toast from "../Toast/Toast";
-import { useFavorites } from "../../contexts/FavoritesContext";
-import { useDispatch } from "react-redux";
+import { openModal } from "../../store/modalSlice";
+import { toggleFavorite, selectIsFavorite } from "../../store/favoritesSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "../../store/cartSlice";
 import { useProduct } from "./ProductCard";
-import { useModal } from "../../hooks/useModal";
 
 export default function ProductCardActions({
   showAdd = false,
   showRemove = false,
   onRemove,
 }) {
-  const product = useProduct(); // { id, ... }
-
-  const { toggle, isFavorite } = useFavorites();
-  const fav = isFavorite(product.id);
-
+  const product = useProduct();
   const dispatch = useDispatch();
-  const { open, close } = useModal(); // для тосту
 
+  const isFav = useSelector(selectIsFavorite(product.id));
   /* ────────────── UI ────────────── */
   return (
     <div className="flex items-center p-4 gap-2">
       {/* Зірочка */}
       <button
-        onClick={() => toggle(product.id)}
+        onClick={() => dispatch(toggleFavorite(product.id))}
         aria-label="toggle favorite"
         className="p-1"
       >
-        <Heart size={20} fill={fav ? "#e63946" : "none"} />
+        <Heart size={20} fill={isFav ? "#e63946" : "none"} />
       </button>
 
       {/* Кнопка «додати у кошик» */}
@@ -39,10 +35,14 @@ export default function ProductCardActions({
         <button
           onClick={() => {
             dispatch(addItem({ id: product.id }));
-            open(<Toast message="Додано у кошик" onClose={close} />);
+            dispatch(
+              openModal({
+                type: "SHOW_TOAST",
+                props: { message: "Додано у кошик" },
+              })
+            );
           }}
           aria-label="add to cart"
-          /* Якщо хрестика не буде – ця кнопка прилипає вправо */
           className={`p-1 ${showRemove ? "" : "ml-auto"}`}
         >
           <ShoppingCart size={20} />
